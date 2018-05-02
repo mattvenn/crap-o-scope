@@ -10,3 +10,5 @@ set_io --warn-no-port g1 80
 set_io --warn-no-port g2 81
 set_io --warn-no-port b1 87
 set_io --warn-no-port b2 88
+
+set_io --warn-no-port debug 119

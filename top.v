@@ -11,6 +11,7 @@ module top (
     output g2,
     output b1,
     output b2,
+    output debug,
 );
 
     wire vga_clk;
@@ -31,7 +32,15 @@ module top (
         .PLLOUTCORE(vga_clk)
     );
 
-    reg [7:0] pixels;
+    wire [10:0] x;
+    wire [9:0] y;
+    wire [2:0] red;
+    wire [2:0] grn;
+    wire [2:0] blu;
+    wire r0, g0, b0;
 
-    vga vga_inst(.clk(vga_clk), .pixels(pixels), .red({r1,r2}), .green({g1,g2}), .blue({b1,b2}), .hsync(hsync), .vsync(vsync));
+
+    vga vga_inst(.clk(vga_clk), .red({r2,r1,r0}), .green({g2,g1,g0}), .blue({b2,b1,b0}), .px_red(red), .px_grn(grn), .px_blu(blu), .hsync(hsync), .vsync(vsync), .hcounter(x), .vcounter(y));
+
+    test_pattern test_patt01(.clk(vga_clk), .x(x), .y(y), .red(red), .blu(blu), .grn(grn), .debug(LED));
 endmodule

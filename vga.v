@@ -37,7 +37,9 @@ Vertical Timing
 module vga (
 	input wire clk,
     input wire reset,
-    input wire [7:0] pixels,
+    input wire [2:0] px_red,
+    input wire [2:0] px_grn,
+    input wire [2:0] px_blu,
     output reg [2:0] red,
     output reg [2:0] green,
     output reg [2:0] blue,
@@ -74,21 +76,14 @@ module vga (
         if(vcounter > 479 )
            lower_blank <= 1'b1;
 
-        // top and bottom border
-        if(vcounter < border_w || ( vcounter > 480 - border_w && vcounter < 480)) begin
-                red <= 3'b110;
-                green <= 3'b000;
-                blue <= 3'b110;
-        end else // left and right border
-        if(hcounter < border_w || ( hcounter > 640 - border_w && hcounter < 640)) begin
-            red <= 3'b011;
-            green <= 3'b000;
-            blue <= 3'b101;
-        end else // data from pixel register
-        if(pixels[hcounter])  begin
-            red <= 3'b000;
-            green <= 3'b111;
-            blue <= 3'b111;
+        if(vcounter < 480 && hcounter < 640) begin
+            red <= px_red;
+            green <= px_grn;
+            blue <= px_blu;
+        end else begin
+            red <= 3'b0;
+            green <= 3'b0;
+            blue <= 3'b0;
         end 
 
     end
