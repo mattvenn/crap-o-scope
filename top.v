@@ -34,13 +34,21 @@ module top (
 
     wire [10:0] x;
     wire [9:0] y;
-    wire [2:0] red;
-    wire [2:0] grn;
-    wire [2:0] blu;
-    wire r0, g0, b0;
 
+    wire [5:0] color_px;
 
-    vga vga_inst(.clk(vga_clk), .red({r2,r1,r0}), .green({g2,g1,g0}), .blue({b2,b1,b0}), .px_red(red), .px_grn(grn), .px_blu(blu), .hsync(hsync), .vsync(vsync), .hcounter(x), .vcounter(y));
+    vga vga_inst(.clk(vga_clk), .red({r2,r1}), .green({g2,g1}), .blue({b2,b1}), .color_px(color_px), .hsync(hsync), .vsync(vsync), .hcounter(x), .vcounter(y));
 
-    test_pattern test_patt01(.clk(vga_clk), .x(x), .y(y), .red(red), .blu(blu), .grn(grn), .debug(LED));
+    wire start = x == 0 && y == 0;
+    wire slow_clk;
+    divM #(.M(20)) divM_0(.clk_in(start), .clk_out(slow_clk));
+    reg [3:0] number;
+
+    always @(posedge slow_clk) begin
+        number <= number + 1;
+        if(number == 9)
+            number <= 0;
+    end
+
+   number number_0 (.clk(vga_clk), .x_px(x), .y_px(y), .x_numbers(100), .y_numbers(100), .number(number), .color_px(color_px));
 endmodule

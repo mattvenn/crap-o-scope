@@ -2,7 +2,7 @@ PROJ = 2bitvga
 PIN_DEF = icestick.pcf
 DEVICE = hx1k
 
-SRC = top.v vga.v test_pattern.v clockdiv.v
+SRC = top.v vga.v test_pattern.v clockdiv.v image.v number.v
 
 all: $(PROJ).bin
 

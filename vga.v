@@ -37,12 +37,10 @@ Vertical Timing
 module vga (
 	input wire clk,
     input wire reset,
-    input wire [2:0] px_red,
-    input wire [2:0] px_grn,
-    input wire [2:0] px_blu,
-    output reg [2:0] red,
-    output reg [2:0] green,
-    output reg [2:0] blue,
+    input wire [5:0] color_px,
+    output reg [1:0] red,
+    output reg [1:0] green,
+    output reg [1:0] blue,
     output reg [10:0] hcounter,
     output reg [9:0] vcounter,
     output reg hsync,
@@ -77,13 +75,13 @@ module vga (
            lower_blank <= 1'b1;
 
         if(vcounter < 480 && hcounter < 640) begin
-            red <= px_red;
-            green <= px_grn;
-            blue <= px_blu;
+            red <=   color_px[5:4];
+            green <= color_px[3:2];
+            blue <=  color_px[1:0];
         end else begin
-            red <= 3'b0;
-            green <= 3'b0;
-            blue <= 3'b0;
+            red <= 2'b0;
+            green <= 2'b0;
+            blue <= 2'b0;
         end 
 
     end
