@@ -2,6 +2,8 @@
 
 module top (
 	input  clk,
+    input a,
+    input b,
     output LED,
     output hsync,
     output vsync,
@@ -32,23 +34,55 @@ module top (
         .PLLOUTCORE(vga_clk)
     );
 
-    wire [10:0] x;
-    wire [9:0] y;
+    wire [10:0] x_px;
+    wire [9:0] y_px;
 
     wire [5:0] color_px;
 
-    vga vga_inst(.clk(vga_clk), .red({r2,r1}), .green({g2,g1}), .blue({b2,b1}), .color_px(color_px), .hsync(hsync), .vsync(vsync), .hcounter(x), .vcounter(y));
+    vga vga_inst(.clk(vga_clk), .red({r2,r1}), .green({g2,g1}), .blue({b2,b1}), .color_px(color_px), .hsync(hsync), .vsync(vsync), .hcounter(x_px), .vcounter(y_px));
 
-    wire start = x == 0 && y == 0;
+    wire start = x_px == 0 && y_px == 0;
     wire slow_clk;
-    divM #(.M(20)) divM_0(.clk_in(start), .clk_out(slow_clk));
-    reg [3:0] number;
+    divM #(.M(16)) divM_0(.clk_in(start), .clk_out(slow_clk));
+
+    reg [15:0] number0;
+    reg [15:0] number1;
+    reg [15:0] number2;
+    always @(posedge start) 
+        number2 <= number2 + 1;
+        
 
     always @(posedge slow_clk) begin
-        number <= number + 1;
-        if(number == 9)
-            number <= 0;
+        number0 <= number0 + 1;
+        number1 <= number1 + 2;
     end
 
-   number number_0 (.clk(vga_clk), .x_px(x), .y_px(y), .x_numbers(100), .y_numbers(100), .number(number), .color_px(color_px));
+   numbers numbers_0 (.clk(vga_clk), .x_px(x_px), .y_px(y_px), .var1(number0), .var2(number1), .var3(counter), .var4(number2), .color_px(color_px));
+
+    wire debounce_clk;
+    wire a_db, b_db;
+    wire a_pullup, b_pullup;
+    divM #(.M(256)) divM_1(.clk_in(clk), .clk_out(debounce_clk));
+    debounce #(.hist_len(4)) debounce_a(.clk(debounce_clk), .button(a_pullup), .debounced(a_db));
+    debounce #(.hist_len(4)) debounce_b(.clk(debounce_clk), .button(b_pullup), .debounced(b_db));
+
+    // pullup config from https://github.com/nesl/ice40_examples/blob/master/buttons_bounce/top.v
+    SB_IO #(
+        .PIN_TYPE(6'b0000_01),
+        .PULLUP(1'b1)
+    ) a_config (
+        .PACKAGE_PIN(a),
+        .D_IN_0(a_pullup)
+    );
+    SB_IO #(
+        .PIN_TYPE(6'b0000_01),
+        .PULLUP(1'b1)
+    ) b_config (
+        .PACKAGE_PIN(b),
+        .D_IN_0(b_pullup)
+    );
+
+    reg [15:0] counter;
+    encoder #(.width(16)) encoder_inst(.clk(clk), .a(a_db), .b(b_db), .value(counter));
+    assign LED = a_db;
 endmodule

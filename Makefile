@@ -2,7 +2,7 @@ PROJ = 2bitvga
 PIN_DEF = icestick.pcf
 DEVICE = hx1k
 
-SRC = top.v vga.v test_pattern.v clockdiv.v image.v number.v
+SRC = top.v vga.v test_pattern.v clockdiv.v image.v number.v numbers.v fontROM.v debounce.v encoder.v
 
 all: $(PROJ).bin
 
@@ -22,6 +22,11 @@ debug-debounce:
 	iverilog -o debounce debounce.v debounce_tb.v
 	vvp debounce -fst
 	gtkwave test.vcd gtk-debounce.gtkw
+
+debug-numbers:
+	iverilog -o numbers numbers.v fontROM.v image.v numbers_tb.v
+	vvp numbers -fst
+	gtkwave test.vcd gtk-numbers.gtkw
 
 prog: $(PROJ).bin
 	iceprog $<

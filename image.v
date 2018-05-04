@@ -21,29 +21,30 @@ module image (
                 output reg  pixel           // Pixel (B&W) in x and y positon.
              );
 
-    // Image name file in binary ASCII code. 
-    parameter FILE = "numbers.txt";
-    
-    // Width and height image.
-    parameter width = 21;
-    parameter height = 230;
-    
-    // Memory
-    reg [width-1:0] numbers [height-1:0];
+wire [3:0] col_bit;      //Column bit in glyph line.
+wire [11:0] addr_rom;
 
-    // Load file in memory.
-    initial
-    begin
-        $readmemb(FILE, numbers);
-    end
+assign col_bit = x_img[3:0];
+assign addr_rom = y_img;
 
-    // Read memory.
-    always @(posedge clk)
-    begin
-        if ((x_img >= 0) && (x_img < width ) && (y_img >= 0) && (y_img < height))
-			// A little trick in x position for a mirror image.
-			pixel = numbers [y_img][width-1-x_img];
-		else
-			pixel = 1'b0;
-    end
+fontROM 
+#(
+    .FONT_FILE("BRAM_16.list")
+)
+fontROM01
+(
+    .clk(clk),
+    .write_en (0),
+    .addr (addr_rom),
+    .dout (glyph_line)
+);
+
+wire [0:15] glyph_line;
+
+// Read memory.
+always @(posedge clk)
+begin
+        pixel = glyph_line[col_bit] ? 1 : 0;
+end
+
 endmodule

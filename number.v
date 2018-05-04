@@ -1,3 +1,4 @@
+`default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
 // Company: Ridotech
 // Engineer: Juan Manuel Rico
@@ -33,9 +34,9 @@ module number (
     parameter [5:0] yellow = 6'b111100;
     parameter [5:0] white  = 6'b111111;
 
-    parameter background = black;
-    parameter background_number = black;
-    parameter ink = yellow;
+    parameter background = white;
+    parameter background_number = white;
+    parameter ink = blue;
     
 	// Numbers dimension.
     parameter width_numbers = 21;
