@@ -1,0 +1,46 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Sat May  5 18:13:28 2018
+[*]
+[dumpfile] "/home/matt/work/fpga/ice-2bit-vga/test.vcd"
+[dumpfile_mtime] "Sat May  5 18:12:58 2018"
+[dumpfile_size] 5554
+[savefile] "/home/matt/work/fpga/ice-2bit-vga/gtk-waveform.gtkw"
+[timestart] 143
+[size] 2512 1573
+[pos] -2513 -1
+*-6.000000 223 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] test.
+[treeopen] test.waveform_0.
+[sst_width] 253
+[signals_width] 647
+[sst_expanded] 1
+[sst_vpaned_height] 497
+@28
+test.clk
+@22
+test.x_px[9:0]
+test.y_px[9:0]
+@200
+-
+@22
+test.waveform_0.addr[11:0]
+@28
+test.waveform_0.sample[15:0]
+@200
+-
+@22
+test.waveform_0.color_px[5:0]
+@200
+-
+@22
+test.waveform_0.fontROM01.addr[11:0]
+@28
+test.waveform_0.fontROM01.clk
+@22
+test.waveform_0.fontROM01.din[15:0]
+test.waveform_0.fontROM01.dout[15:0]
+@29
+test.waveform_0.fontROM01.write_en
+[pattern_trace] 1
+[pattern_trace] 0

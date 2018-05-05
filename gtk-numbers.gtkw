@@ -1,0 +1,47 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Fri May  4 17:33:43 2018
+[*]
+[dumpfile] "/home/matt/work/fpga/ice-2bit-vga/test.vcd"
+[dumpfile_mtime] "Fri May  4 17:20:47 2018"
+[dumpfile_size] 4562
+[savefile] "/home/matt/work/fpga/ice-2bit-vga/gtk-numbers.gtkw"
+[timestart] 0
+[size] 2512 1573
+[pos] 559 436
+*-3.000000 36 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] test.
+[treeopen] test.numbers_0.
+[treeopen] test.numbers_0.image01.
+[sst_width] 253
+[signals_width] 239
+[sst_expanded] 1
+[sst_vpaned_height] 501
+@28
+test.clk
+@201
+-
+@24
+test.x_px[9:0]
+test.y_px[9:0]
+@200
+-
+@24
+test.numbers_0.x_img[7:0]
+test.numbers_0.y_img[7:0]
+@200
+-
+@24
+test.numbers_0.row[1:0]
+test.numbers_0.col[1:0]
+@22
+test.numbers_0.number[3:0]
+@200
+-
+@28
+test.numbers_0.pixel
+test.numbers_0.drawing
+@22
+test.numbers_0.color_px[5:0]
+[pattern_trace] 1
+[pattern_trace] 0
