@@ -13,14 +13,16 @@ module waveform
     input wire        clk,        // System clock.
     input wire [9:0]  x_px,       // X position actual pixel.
     input wire [9:0]  y_px,       // Y position actual pixel.
-    output reg [5:0]  color_px    // Actual pixel color.
+    output reg [5:0]  color_px,    // Actual pixel color.
+    input wire [data_width-1:0] sample
 );
 
     wire [addr_width-1:0] addr;
-    wire [data_width-1:0] sample;
+//    wire [data_width-1:0] sample;
 
     assign addr = x_px - x_off;
 
+/*
     fontROM 
     #(
         .FONT_FILE("wave.list"),
@@ -34,11 +36,11 @@ module waveform
         .addr (addr),
         .dout (sample)
     );
-    reg [data_width-1:0] last, current, next;
+    */
+    reg [data_width-1:0] last, current;
 
     always @(posedge clk) begin
-        next <= sample;
-        current <= next;
+        current <= sample;
         last <= current;
     end
 

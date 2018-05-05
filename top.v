@@ -14,6 +14,10 @@ module top (
     output b1,
     output b2,
     output debug,
+
+    output adc_clk,
+    output adc_cs,
+    input adc_sd
 );
 
     wire vga_clk;
@@ -44,37 +48,44 @@ module top (
 
     vga vga_inst(.clk(vga_clk), .red({r2,r1}), .green({g2,g1}), .blue({b2,b1}), .color_px(number_color_px|square_color_px|grid_color_px|wave_color_px), .hsync(hsync), .vsync(vsync), .hcounter(x_px), .vcounter(y_px));
 
+    wire adc_ready;
+    wire [11:0] adc_data;
+    reg [11:0] data_buf; // for display as number
+    reg [11:0] wave_data;// for waveform
+    adc adc_inst_0(.clk(vga_clk), .reset(0), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd), .ready(adc_ready), .data(adc_data));
+
+
+
     wire start = x_px == 0 && y_px == 0;
-    wire slow_clk;
-    divM #(.M(16)) divM_0(.clk_in(start), .clk_out(slow_clk));
-
-    reg [15:0] number0;
-    reg [15:0] number1;
-    reg [15:0] number2;
-    always @(posedge start) 
-        number2 <= number2 + 1;
-        
-
-    always @(posedge slow_clk) begin
-        number0 <= number0 + 1;
-        number1 <= number1 + 2;
+    reg [15:0] frames;
+    always @(posedge start)  begin
+        frames <= frames + 1;
+        data_buf <= adc_data;
     end
-
+    always @(posedge adc_ready)
+        wave_data <= adc_data;
+        
+        
     // Some colors.
-    parameter [5:0] black  = 6'b000000;
-    parameter [5:0] blue   = 6'b000011;
+    parameter [5:0] black   = 6'b000000;
+
+    parameter [5:0] blue0   = 6'b000001;
+    parameter [5:0] blue1   = 6'b000010;
+    parameter [5:0] blue2   = 6'b000011;
+
+
     parameter [5:0] green0  = 6'b000100;
     parameter [5:0] green1  = 6'b001000;
     parameter [5:0] green2  = 6'b001100;
-    parameter [5:0] red    = 6'b110000;
-    parameter [5:0] yellow = 6'b111100;
-    parameter [5:0] white  = 6'b111111;
+    parameter [5:0] red     = 6'b110000;
+    parameter [5:0] yellow  = 6'b111100;
+    parameter [5:0] white   = 6'b111111;
 
-//    numbers  #( .x_off(100), .y_off(100)) numbers_0(.clk(vga_clk), .x_px(x_px), .y_px(y_px), .var1(number0), .var2(number1), .var3(counter), .var4(number2), .color_px(number_color_px));
- //   color_sq #( .x_off(200), .y_off(100), .w(64), .h(64))  color_sq_0 (.clk(vga_clk), .x_px(x_px), .y_px(y_px), .color(counter), .color_px(square_color_px));
+    numbers  #( .x_off(20), .y_off(5)) numbers_0(.clk(vga_clk), .x_px(x_px), .y_px(y_px), .var1(frames), .var2(pot), .var3(data_buf >> 3), .var4(data_buf), .color_px(number_color_px));
+    color_sq #( .x_off(100), .y_off(5), .w(512), .h(64), .color1(blue0), .color2(blue2))  color_sq_0 (.clk(vga_clk), .x_px(x_px), .y_px(y_px), .div(data_buf >> 3), .color_px(square_color_px));
 
-    grid     #( .x_off(100), .y_off(200), .w(400), .h(200), .space(20), .color(green1))  grid_0 (.clk(vga_clk), .x_px(x_px), .y_px(y_px), .color_px(grid_color_px));
-    waveform #( .x_off(100), .y_off(200), .w(400), .h(200), .color(white))  waveform_0 (.clk(vga_clk), .x_px(x_px), .y_px(y_px), .color_px(wave_color_px));
+    grid     #( .x_off(20), .y_off(70), .w(600), .h(400), .space(20), .color(green1))  grid_0 (.clk(vga_clk), .x_px(x_px), .y_px(y_px), .color_px(grid_color_px));
+    waveform #( .x_off(20), .y_off(70), .w(600), .h(400), .color(white))  waveform_0 (.clk(vga_clk), .x_px(x_px), .y_px(y_px), .color_px(wave_color_px), .sample((wave_data >> 3) + pot));
 
     wire debounce_clk;
     wire a_db, b_db;
@@ -99,7 +110,7 @@ module top (
         .D_IN_0(b_pullup)
     );
 
-    reg [15:0] counter;
-    encoder #(.width(16)) encoder_inst(.clk(clk), .a(a_db), .b(b_db), .value(counter));
+    reg [15:0] pot;
+    encoder #(.width(16)) encoder_inst(.clk(clk), .a(a_db), .b(b_db), .value(pot));
     assign LED = a_db;
 endmodule
