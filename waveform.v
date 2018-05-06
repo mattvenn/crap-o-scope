@@ -22,21 +22,6 @@ module waveform
 
     assign addr = x_px - x_off;
 
-/*
-    fontROM 
-    #(
-        .FONT_FILE("wave.list"),
-        .addr_width(addr_width),
-        .data_width(data_width)
-    )
-    fontROM01
-    (
-        .clk(clk),
-        .write_en (0),
-        .addr (addr),
-        .dout (sample)
-    );
-    */
     reg [data_width-1:0] last, current;
 
     always @(posedge clk) begin

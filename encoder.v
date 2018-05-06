@@ -1,13 +1,16 @@
-module encoder (
+`default_nettype none
+module encoder #(
+    parameter width = 4,
+    parameter initial_val = 0
+)(
     input a,
     input b,
     input clk,
     output reg [width-1:0] value
 );
-    parameter width = 4;
 
     initial begin
-        value <= 0;
+        value <= initial_val;
     end
 
     reg oa = 0;

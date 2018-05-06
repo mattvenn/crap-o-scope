@@ -19,3 +19,5 @@ set_io --warn-no-port adc_cs 117
 set_io --warn-no-port adc_sd  116
 set_io --warn-no-port adc_clk  115
 
+set_io --warn-no-port debug  44
+
