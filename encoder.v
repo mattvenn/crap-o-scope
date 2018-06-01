@@ -1,7 +1,8 @@
 `default_nettype none
 module encoder #(
     parameter width = 4,
-    parameter initial_val = 0
+    parameter initial_val = 0,
+    parameter increment = 1
 )(
     input a,
     input b,
@@ -20,10 +21,10 @@ module encoder #(
     always@(posedge clk) begin
         if(a != oa || b != ob )
             case ({a,oa,b,ob})
-                4'b1000: value <= value + 1;
-                4'b0111: value <= value + 1;
-                4'b0010: value <= value - 1;
-                4'b1101: value <= value - 1;
+                4'b1000: value <= value + increment;
+                4'b0111: value <= value + increment;
+                4'b0010: value <= value - increment;
+                4'b1101: value <= value - increment;
             endcase 
     end
 

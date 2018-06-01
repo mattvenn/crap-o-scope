@@ -21,6 +21,7 @@ module top (
 );
 
     wire vga_clk;
+    assign debug = ram_wen; // toggle a pin when storing an ADC value to BRAM
 
     //PLL details http://www.latticesemi.com/view_document?document_id=47778
     //vga clock freq is 25.2MHz (see vga.v)
@@ -123,7 +124,7 @@ module top (
     );
 
     reg [15:0] pot;
-    encoder #(.width(16), .initial_val(800)) encoder_inst(.clk(clk), .a(a_db), .b(b_db), .value(pot));
+    encoder #(.width(16), .initial_val(800), .increment(4)) encoder_inst(.clk(clk), .a(a_db), .b(b_db), .value(pot));
     assign LED = a_db;
 
 
@@ -158,8 +159,8 @@ module top (
 
 
     /* state machine for trigger -
-        - when the vga module is in screen blanking (at the bottom), wait for the adc to be below the trigger value (set by encoder)
-        - when adc > trigger val start writing samples to the BRAM
+        - when the vga module is in screen blanking (at the bottom), wait for the adc to be above the trigger value (set by encoder)
+        - when adc < trigger val start writing samples to the BRAM
         - after max samples captured, wait for top of screen to avoid overwriting the buffer
     */
     always @(posedge vga_clk) begin
@@ -169,11 +170,11 @@ module top (
                 wr_addr <= 0;
                 ram_wen <= 0;
                 if(lower_blank) // only run the capture on the screen blank
-                    if(adc_data < trigger_val)
-                        trig_state <= T_ARMED;
+                if(adc_data > trigger_val)
+                    trig_state <= T_ARMED;
             end
             T_ARMED: begin
-                if(adc_data > trigger_val) begin
+                if(adc_data < trigger_val) begin
                     triggers <= triggers + 1;
                     trig_state <= T_CAPTURE;
                 end
