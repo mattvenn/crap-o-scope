@@ -2,7 +2,7 @@ PROJ = 2bitvga
 PIN_DEF = icestick.pcf
 DEVICE = hx1k
 
-SRC = top.v vga.v test_pattern.v clockdiv.v image.v number.v numbers.v fontROM.v debounce.v encoder.v color_sq.v grid.v waveform.v adc.v
+SRC = top.v vga.v clockdiv.v image.v numbers.v fontROM.v debounce.v encoder.v color_sq.v grid.v waveform.v adc.v
 
 all: $(PROJ).bin
 
